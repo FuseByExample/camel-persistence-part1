@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+             http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+             version="2.0">
+
+    <persistence-unit name="reportincident" transaction-type="RESOURCE_LOCAL">
+        <class>com.fusesource.examples.persistence.part1.model.Incident</class>
+
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+        <!-- hsql
+        <properties>
+            <property name="openjpa.jdbc.SynchronizeMappings"
+                      value="buildSchema(SchemaAction='add,deleteTableContents')"/>
+            <property name="openjpa.Log"
+                      value="commons" />
+            <property name="openjpa.jdbc.DBDictionary"
+                      value="hsql(useSchemaName=true)"/>
+            <property name="openjpa.jdbc.Schema"
+                      value="REPORT" />
+        </properties>
+        -->
+
+        <properties>
+            <property name="openjpa.jdbc.SynchronizeMappings"
+                      value="buildSchema(SchemaAction='add,deleteTableContents')"/>
+            <property name="openjpa.Log"
+                      value="commons"/>
+            <property name="openjpa.jdbc.DBDictionary"
+                      value="h2(useSchemaName=true)"/>
+            <property name="openjpa.jdbc.Schema"
+                      value="REPORT"/>
+        </properties>
+
+    </persistence-unit>
+</persistence>
+        
