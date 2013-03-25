@@ -66,7 +66,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>org.springframework.orm</artifactId>
-            <version>3.0.5.RELEASE</version>
+            <version>${spring-version}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

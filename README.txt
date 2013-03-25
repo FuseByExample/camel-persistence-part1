@@ -48,7 +48,7 @@ H2 DATABASE
 
         Next click on "connect" and the screen to manage the reportdb appears
 
-    5) Create Schema and Tables using the script located in the file persistence/database/src/config/hsqldb/reportdb-scripts.sql
+    5) Create Schema and Tables using the script located in the file persistence/database/src/config/hsqldb/reportdb-h2-scripts.sql
 
         Execute the scripts 1), 2) and 3) defined in this file
 
@@ -66,7 +66,7 @@ HSQL DATABASE
 
         java -cp lib/hsqldb-1.8.0.10.jar org.hsqldb.util.DatabaseManagerSwing --user sa --url jdbc:hsqldb:hsql://localhost/reportdb
 
-    3) Create Schema and Tables using the script located in the file persistence/database/src/config/hsqldb/reportdb-scripts.sql
+    3) Create Schema and Tables using the script located in the file persistence/database/src/config/hsqldb/reportdb-hsqldb-scripts.sql
 
         Execute the scripts 1), 2) and 3) defined in this file
 
