@@ -26,7 +26,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <camel-version>2.10.0.redhat-60020</camel-version>
+        <camel-version>2.10.0.redhat-60024</camel-version>
         <hsqldb-version>1.8.0.10</hsqldb-version>
         <h2-version>1.3.171</h2-version>
         <spring-version>3.1.3.RELEASE</spring-version>
