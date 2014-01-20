@@ -58,15 +58,19 @@ H2 DATABASE
 HSQL DATABASE
 =============
 
-    1) Start HSQLDB Server using the command and lib jar provided in database directory
+    1) Open a DOS/UNIX console in the folder persistence/database
 
-        java -cp lib/hsqldb-1.8.0.10.jar org.hsqldb.Server -database.0 file:db/reportdb -dbname.0 reportdb
+    2) Download HSQLDB Database (http://hsqldb.org) and install it
 
-    2) In a separate DOS/UNIX console, start the Swing DataBase Manager console using the following command
+    3) Start HSQLDB Server using the command and lib jar provided in database directory
 
-        java -cp lib/hsqldb-1.8.0.10.jar org.hsqldb.util.DatabaseManagerSwing --user sa --url jdbc:hsqldb:hsql://localhost/reportdb
+        java -cp lib/hsqldb.jar org.hsqldb.Server -database.0 file:db/reportdb -dbname.0 reportdb
 
-    3) Create Schema and Tables using the script located in the file persistence/database/src/config/hsqldb/reportdb-hsqldb-scripts.sql
+    4) In a separate DOS/UNIX console, start the Swing DataBase Manager console using the following command
+
+        java -cp lib/hsqldb.jar org.hsqldb.util.DatabaseManagerSwing --user sa --url jdbc:hsqldb:hsql://localhost/reportdb
+
+    5) Create Schema and Tables using the script located in the file persistence/database/src/config/hsqldb/reportdb-hsqldb-scripts.sql
 
         Execute the scripts 1), 2) and 3) defined in this file
 
