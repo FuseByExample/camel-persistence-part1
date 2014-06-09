@@ -86,20 +86,20 @@
     <!-- Add FUSE repositories for snaphots and releases -->
     <pluginRepositories>
         <pluginRepository>
-            <id>fusesource.com</id>
-            <name>FuseSource Maven Repository</name>
-            <url>http://repo.fusesource.com/maven2/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
+            <id>fusesource.releases</id>
+            <name>FuseSource Release Repository</name>
+            <url>https://repository.jboss.org/nexus/content/repositories/fs-releases/</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </pluginRepository>
         <pluginRepository>
             <id>fusesource.ea</id>
-            <name>FuseSource Early Access</name>
-            <url>http://repo.fusesource.com/nexus/content/groups/ea/</url>
+            <name>FuseSource Early Access Release Repository</name>
+            <url>https://repository.jboss.org/nexus/content/groups/ea/</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -110,9 +110,20 @@
     </pluginRepositories>
     <repositories>
         <repository>
-            <id>fusesource.com</id>
-            <name>FuseSource Maven Repository</name>
-            <url>http://repo.fusesource.com/maven2/</url>
+            <id>fusesource.releases</id>
+            <name>FuseSource Release Repository</name>
+            <url>https://repository.jboss.org/nexus/content/repositories/fs-releases/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>fusesource.ea</id>
+            <name>FuseSource Early Access Release Repository</name>
+            <url>https://repository.jboss.org/nexus/content/groups/ea/</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -131,17 +142,6 @@
         <repository>
             <id>Spring-release-repo</id>
             <url>http://repository.springsource.com/maven/bundles/release</url>
-        </repository>
-        <repository>
-            <id>fusesource.ea</id>
-            <name>FuseSource Early Access</name>
-            <url>http://repo.fusesource.com/nexus/content/groups/ea/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
         </repository>
     </repositories>
 </project>
