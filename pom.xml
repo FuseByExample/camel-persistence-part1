@@ -34,8 +34,8 @@
         <h2.version>1.4.184</h2.version>
         <openjpa.maven.plugin.version>1.2</openjpa.maven.plugin.version>
         <spring.version>3.2.11.RELEASE</spring.version>
-        <slf4j-version>1.7.10</slf4j-version>
-        <log4j-version>1.2.17</log4j-version>
+        <slf4j.version>1.7.10</slf4j.version>
+        <log4j.version>1.2.17</log4j.version>
     </properties>
 
     <modules>
@@ -76,12 +76,12 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>${slf4j-version}</version>
+            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
-            <version>${log4j-version}</version>
+            <version>${log4j.version}</version>
         </dependency>
 
     </dependencies>
