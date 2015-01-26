@@ -29,7 +29,7 @@
         <apache.openjpa.version>2.3.0</apache.openjpa.version>
         <camel.version>2.14.0.redhat-620058</camel.version>
         <commons.lang.version>2.6</commons.lang.version>
-        <commons.logging.version>1.1.3</commons.logging.version>
+        <commons.logging.version>1.2</commons.logging.version>
         <hsqldb.version>1.8.0.10</hsqldb.version>
         <h2.version>1.4.184</h2.version>
         <openjpa.maven.plugin.version>1.2</openjpa.maven.plugin.version>
