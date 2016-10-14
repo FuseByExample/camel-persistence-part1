@@ -26,24 +26,36 @@
     <packaging>pom</packaging>
 
     <properties>
+        <jboss.fuse.bom.version>6.3.0.redhat-187</jboss.fuse.bom.version>
+
         <apache.openjpa.version>2.3.0</apache.openjpa.version>
-        <camel.version>2.15.1.redhat-621084</camel.version>
+        <camel.version>2.17.0.redhat-630187</camel.version>
         <commons.lang.version>2.6</commons.lang.version>
         <commons.logging.version>1.2</commons.logging.version>
         <hsqldb.version>1.8.0.10</hsqldb.version>
         <h2.version>1.4.184</h2.version>
         <openjpa.maven.plugin.version>1.2</openjpa.maven.plugin.version>
-        <spring.version>3.2.11.RELEASE</spring.version>
-        <slf4j.version>1.7.10</slf4j.version>
-        <log4j.version>1.2.17</log4j.version>
+        <spring.version>3.2.13.RELEASE</spring.version>
     </properties>
 
     <modules>
         <module>jdbc</module>
         <module>jpa</module>
         <module>sql-spring</module>
-        <!-- <module>sql-spring-persistence</module> -->
     </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jboss.fuse.bom</groupId>
+                <artifactId>jboss-fuse-parent</artifactId>
+                <version>${jboss.fuse.bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <!-- Camel -->
@@ -71,81 +83,37 @@
             <artifactId>h2</artifactId>
             <version>${h2.version}</version>
         </dependency>
-
-        <!-- Logging -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>${log4j.version}</version>
-        </dependency>
-
     </dependencies>
 
 
     <!-- Add FUSE repositories for snaphots and releases -->
-    <pluginRepositories>
-        <pluginRepository>
-            <id>fusesource.releases</id>
-            <name>FuseSource Release Repository</name>
-            <url>https://repository.jboss.org/nexus/content/repositories/fs-releases/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </pluginRepository>
-        <pluginRepository>
-            <id>fusesource.ea</id>
-            <name>FuseSource Early Access Release Repository</name>
-            <url>https://repository.jboss.org/nexus/content/groups/ea/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </pluginRepository>
-    </pluginRepositories>
     <repositories>
         <repository>
-            <id>fusesource.releases</id>
-            <name>FuseSource Release Repository</name>
-            <url>https://repository.jboss.org/nexus/content/repositories/fs-releases/</url>
+            <id>redhat-ga-repository</id>
+            <url>https://maven.repository.redhat.com/ga</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
-        </repository>
-        <repository>
-            <id>fusesource.ea</id>
-            <name>FuseSource Early Access Release Repository</name>
-            <url>https://repository.jboss.org/nexus/content/groups/ea/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </repository>
-        <repository>
-            <id>Maven-repo</id>
-            <url>http://repo1.maven.org/maven2/</url>
-        </repository>
-        <repository>
-            <id>Spring-external-repo</id>
-            <url>http://repository.springsource.com/maven/bundles/external</url>
-        </repository>
-        <repository>
-            <id>Spring-release-repo</id>
-            <url>http://repository.springsource.com/maven/bundles/release</url>
         </repository>
     </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>redhat-ga-repository</id>
+            <url>https://maven.repository.redhat.com/ga</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
+
+
+
 </project>

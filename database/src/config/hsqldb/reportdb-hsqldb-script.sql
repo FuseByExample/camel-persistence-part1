@@ -45,10 +45,10 @@ CREATE TABLE REPORT.T_INCIDENT (
 
 3) INSERT RECORDS
 *****************
-INSERT INTO REPORT.T_INCIDENT (INCIDENT_REF, INCIDENT_DATE,GIVEN_NAME,FAMILY_NAME,SUMMARY,DETAILS,EMAIL,PHONE) VALUES ('001','2011-03-21','Charles','Moulliard','Incident Webinar-001','This is a report incident for webinar-001','cmoulliard@fusesource.com','+111 10 20 300')
-INSERT INTO REPORT.T_INCIDENT (INCIDENT_REF, INCIDENT_DATE,GIVEN_NAME,FAMILY_NAME,SUMMARY,DETAILS,EMAIL,PHONE) VALUES ('002','2011-03-22','Charles','Moulliard','Incident Webinar-002','This is a report incident for webinar-002','cmoulliard@fusesource.com','+111 10 20 300')
-INSERT INTO REPORT.T_INCIDENT (INCIDENT_REF, INCIDENT_DATE,GIVEN_NAME,FAMILY_NAME,SUMMARY,DETAILS,EMAIL,PHONE) VALUES ('003','2011-03-23','Charles','Moulliard','Incident Webinar-003','This is a report incident for webinar-003','cmoulliard@fusesource.com','+111 10 20 300')
-INSERT INTO REPORT.T_INCIDENT (INCIDENT_REF, INCIDENT_DATE,GIVEN_NAME,FAMILY_NAME,SUMMARY,DETAILS,EMAIL,PHONE) VALUES ('004','2011-03-24','Charles','Moulliard','Incident Webinar-004','This is a report incident for webinar-004','cmoulliard@fusesource.com','+111 10 20 300')
+INSERT INTO REPORT.T_INCIDENT (INCIDENT_REF, INCIDENT_DATE,GIVEN_NAME,FAMILY_NAME,SUMMARY,DETAILS,EMAIL,PHONE) VALUES ('001','2011-03-21 12:00:00','Charles','Moulliard','Incident Webinar-001','This is a report incident for webinar-001','cmoulliard@fusesource.com','+111 10 20 300')
+INSERT INTO REPORT.T_INCIDENT (INCIDENT_REF, INCIDENT_DATE,GIVEN_NAME,FAMILY_NAME,SUMMARY,DETAILS,EMAIL,PHONE) VALUES ('002','2011-03-22 12:00:00','Charles','Moulliard','Incident Webinar-002','This is a report incident for webinar-002','cmoulliard@fusesource.com','+111 10 20 300')
+INSERT INTO REPORT.T_INCIDENT (INCIDENT_REF, INCIDENT_DATE,GIVEN_NAME,FAMILY_NAME,SUMMARY,DETAILS,EMAIL,PHONE) VALUES ('003','2011-03-23 12:00:00','Charles','Moulliard','Incident Webinar-003','This is a report incident for webinar-003','cmoulliard@fusesource.com','+111 10 20 300')
+INSERT INTO REPORT.T_INCIDENT (INCIDENT_REF, INCIDENT_DATE,GIVEN_NAME,FAMILY_NAME,SUMMARY,DETAILS,EMAIL,PHONE) VALUES ('004','2011-03-24 12:00:00','Charles','Moulliard','Incident Webinar-004','This is a report incident for webinar-004','cmoulliard@fusesource.com','+111 10 20 300')
 
 
 4) CREATE TABLES FOR PUBLIC SCHEMAS
@@ -75,10 +75,10 @@ CREATE TABLE PUBLIC.T_INCIDENT (
 
 5) INSERT RECORDS
 *****************
-INSERT INTO PUBLIC.T_INCIDENT (INCIDENT_ID,INCIDENT_REF,INCIDENT_DATE,GIVEN_NAME,FAMILY_NAME,SUMMARY,DETAILS,EMAIL,PHONE) VALUES ('1','001','2011-03-21','Charles','Moulliard','Incident Webinar-001','This is a report incident for webinar-001','cmoulliard@fusesource.com','+111 10 20 300')
-INSERT INTO PUBLIC.T_INCIDENT (INCIDENT_ID,INCIDENT_REF,INCIDENT_DATE,GIVEN_NAME,FAMILY_NAME,SUMMARY,DETAILS,EMAIL,PHONE) VALUES ('2','002','2011-03-22','Charles','Moulliard','Incident Webinar-002','This is a report incident for webinar-002','cmoulliard@fusesource.com','+111 10 20 300')
-INSERT INTO PUBLIC.T_INCIDENT (INCIDENT_ID,INCIDENT_REF,INCIDENT_DATE,GIVEN_NAME,FAMILY_NAME,SUMMARY,DETAILS,EMAIL,PHONE) VALUES ('3','003','2011-03-23','Charles','Moulliard','Incident Webinar-003','This is a report incident for webinar-003','cmoulliard@fusesource.com','+111 10 20 300')
-INSERT INTO PUBLIC.T_INCIDENT (INCIDENT_ID,INCIDENT_REF,INCIDENT_DATE,GIVEN_NAME,FAMILY_NAME,SUMMARY,DETAILS,EMAIL,PHONE) VALUES ('4','004','2011-03-24','Charles','Moulliard','Incident Webinar-004','This is a report incident for webinar-004','cmoulliard@fusesource.com','+111 10 20 300')
+INSERT INTO PUBLIC.T_INCIDENT (INCIDENT_ID,INCIDENT_REF,INCIDENT_DATE,GIVEN_NAME,FAMILY_NAME,SUMMARY,DETAILS,EMAIL,PHONE) VALUES ('1','001','2011-03-21 12:00:00','Charles','Moulliard','Incident Webinar-001','This is a report incident for webinar-001','cmoulliard@fusesource.com','+111 10 20 300')
+INSERT INTO PUBLIC.T_INCIDENT (INCIDENT_ID,INCIDENT_REF,INCIDENT_DATE,GIVEN_NAME,FAMILY_NAME,SUMMARY,DETAILS,EMAIL,PHONE) VALUES ('2','002','2011-03-22 12:00:00','Charles','Moulliard','Incident Webinar-002','This is a report incident for webinar-002','cmoulliard@fusesource.com','+111 10 20 300')
+INSERT INTO PUBLIC.T_INCIDENT (INCIDENT_ID,INCIDENT_REF,INCIDENT_DATE,GIVEN_NAME,FAMILY_NAME,SUMMARY,DETAILS,EMAIL,PHONE) VALUES ('3','003','2011-03-23 12:00:00','Charles','Moulliard','Incident Webinar-003','This is a report incident for webinar-003','cmoulliard@fusesource.com','+111 10 20 300')
+INSERT INTO PUBLIC.T_INCIDENT (INCIDENT_ID,INCIDENT_REF,INCIDENT_DATE,GIVEN_NAME,FAMILY_NAME,SUMMARY,DETAILS,EMAIL,PHONE) VALUES ('4','004','2011-03-24 12:00:00','Charles','Moulliard','Incident Webinar-004','This is a report incident for webinar-004','cmoulliard@fusesource.com','+111 10 20 300')
 
 
 6) Usefuls scripts

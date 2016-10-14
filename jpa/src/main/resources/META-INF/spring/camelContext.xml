@@ -38,7 +38,7 @@
     <camelContext id="camel" xmlns="http://camel.apache.org/schema/spring">
 
         <dataFormats>
-            <bindy type="Csv" packages="com.fusesource.examples.persistence.part1.model" id="csvReport"/>
+            <bindy type="Csv" classType="com.fusesource.examples.persistence.part1.model.Incident" id="csvReport"/>
         </dataFormats>
 
         <!-- Route which will poll the DB and so perform select query -->
