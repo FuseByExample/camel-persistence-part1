@@ -29,6 +29,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
         <fuse.build>284</fuse.build>
 
         <version.org.apache.camel>2.17.0.redhat-630${fuse.build}</version.org.apache.camel>
@@ -53,8 +54,9 @@
     <modules>
         <module>jdbc-spring</module>
         <module>jdbc-blueprint</module>
+        <module>sql-spring</module>
+        <module>sql-blueprint</module>
         <!--<module>jpa</module>-->
-        <!--<module>sql-spring</module>-->
     </modules>
 
     <dependencyManagement>

@@ -6,6 +6,8 @@ It covers the different demos made during the talk and is organised like that:
 * `database`: directory containing the scripts to create the database for H2, HSQLDB and PostgreSQL RDBMSes
 * `jdbc-spring`: Maven project using camel-jdbc component and Spring XML DSL
 * `jdbc-blueprint`: Maven project using camel-jdbc component and Blueprint XML DSL
+* `sql-spring`: Maven project using camel-sql component and Spring XML DSL
+* `sql-blueprint`: Maven project using camel-sql component and Blueprint XML DSL
 
 # Initial setup
 
@@ -37,25 +39,25 @@ You can use any of available methods to access PostgreSQL server (e.g., by mappi
 
 3. Initialize database `reportdb` by creating schema, table and populating the table with data.
 
-    $ cd $PROJECT_HOME/database
-    $ docker cp src/config/postgresql/reportdb-postgresql-script.sql fuse-postgresql-server:/tmp
-    $ docker exec -ti fuse-postgresql-server /bin/bash
-    $ root@58b0d9de9c5b:/# psql -U fuse -d reportdb -f /tmp/reportdb-postgresql-script.sql 
-    ...
-    DROP SCHEMA
-    CREATE SCHEMA
-    CREATE TABLE
-    INSERT 0 1
-    INSERT 0 1
-    INSERT 0 1
-    INSERT 0 1
+        $ cd $PROJECT_HOME/database
+        $ docker cp src/config/postgresql/reportdb-postgresql-script.sql fuse-postgresql-server:/tmp
+        $ docker exec -ti fuse-postgresql-server /bin/bash
+        $ root@58b0d9de9c5b:/# psql -U fuse -d reportdb -f /tmp/reportdb-postgresql-script.sql 
+        ...
+        DROP SCHEMA
+        CREATE SCHEMA
+        CREATE TABLE
+        INSERT 0 1
+        INSERT 0 1
+        INSERT 0 1
+        INSERT 0 1
 
 # Running examples
 
 ## `jdbc-spring` and `jdbc-blueprint`
 
 These examples can be run using camel-test-spring and camel-test-blueprint respectively. Examples will run outside
-of Fuse server and require only running database server.
+of JBoss Fuse server and require only running database server.
 
 For `jdbc-spring` example, run:
 
@@ -79,9 +81,40 @@ We can also run 2nd Camel context using:
 For `jdbc-blueprint` we use Blueprint XML DSL and because of more _discovery_ nature of `camel-test-blueprint`, we
 use only `camelContext1.xml` example. We can run this example using:
 
-    $ cd $PROJECT_HOME/jdbc-spring
+    $ cd $PROJECT_HOME/jdbc-blueprint
     $ mvn clean package camel:run
 
 The invocation is slightly different - `package` goal has to be invoked, so we have proper OSGi bundle - or rather
 proper OSGi bundle `MANIFEST.MF` file generated in `target/classes/META-INF` directory. This allows `camel-test-blueprint`
 to _pick up_ `target/classes` directory as correct OSGi bundle.
+
+## `sql-spring` and `sql-blueprint`
+
+These examples also can be run outside JBoss Fuse server using camel-test-spring and camel-test-blueprint respectively.
+This time we can also create new records in database by sending content of files through Camel route to the database
+using `camel-spring` component.
+
+For `sql-spring` example, run:
+
+    $ cd $PROJECT_HOME/sql-spring
+    $ mvn clean compile camel:run
+
+This will start the route and print the content of `t_incident` table every 20 seconds. We can create new incidents
+in two ways:
+
+1. by invoking `insert-from-file-using-bean` route that prepares new record in bean method:
+
+        $ cd $PROJECT_HOME/sql-spring
+        $ cp data/key.txt target/datainsert
+
+2. by invoking `insert-from-file-using-split` route that prepares new record simply by splitting comma-separated values
+from given file
+
+        $ cd $PROJECT_HOME/sql-spring
+        $ cp data/keyParams.txt target/datainsertparams
+
+For `sql-blueprint` the examples are run almost like the ones in `sql-spring`, except that `package` phase has
+to be invoked.
+
+        $ cd $PROJECT_HOME/sql-blueprint
+        $ mvn clean package camel:run

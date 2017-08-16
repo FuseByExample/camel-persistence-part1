@@ -51,6 +51,13 @@
             <artifactId>camel-jdbc</artifactId>
         </dependency>
 
+        <!-- Spring -->
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+        </dependency>
+
         <!-- OSGi -->
 
         <dependency>
@@ -60,13 +67,6 @@
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>osgi.core</artifactId>
-        </dependency>
-
-        <!-- Spring -->
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
         </dependency>
 
         <!-- Database drivers -->

@@ -17,8 +17,7 @@
 
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -26,19 +25,33 @@
         <groupId>com.fusesource.examples</groupId>
         <artifactId>camel-persistence-part1</artifactId>
         <version>1.0</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <groupId>com.fusesource.examples.camel-persistence-part1</groupId>
     <artifactId>sql-spring</artifactId>
-    <name>FuseSource :: Examples :: Camel Persistence :: SQL - Spring</name>
+    <name>FuseSource :: Examples :: Camel Persistence :: SQL Spring</name>
 
     <dependencies>
-        <!-- Camel SQL -->
+
+        <!-- Camel -->
+
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-spring</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-sql</artifactId>
-            <version>${camel.version}</version>
         </dependency>
+
+        <!-- Database drivers -->
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -46,11 +59,11 @@
             <plugin>
                 <groupId>org.apache.camel</groupId>
                 <artifactId>camel-maven-plugin</artifactId>
-                <version>${camel.version}</version>
                 <configuration>
                     <applicationContextUri>META-INF/spring/*.xml</applicationContextUri>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
 </project>

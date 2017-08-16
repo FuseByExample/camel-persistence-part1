@@ -29,8 +29,9 @@
     </parent>
 
     <groupId>com.fusesource.examples.camel-persistence-part1</groupId>
-    <artifactId>jdbc-spring</artifactId>
-    <name>FuseSource :: Examples :: Camel Persistence :: JDBC Spring</name>
+    <artifactId>sql-blueprint</artifactId>
+    <packaging>bundle</packaging>
+    <name>FuseSource :: Examples :: Camel Persistence :: SQL Blueprint</name>
 
     <dependencies>
 
@@ -38,18 +39,27 @@
 
         <dependency>
             <groupId>org.apache.camel</groupId>
-            <artifactId>camel-spring</artifactId>
+            <artifactId>camel-blueprint</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
-            <artifactId>camel-jdbc</artifactId>
+            <artifactId>camel-test-blueprint</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-sql</artifactId>
         </dependency>
 
-        <!-- Spring -->
+        <!-- OSGi -->
 
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
+            <groupId>org.osgi</groupId>
+            <artifactId>osgi.enterprise</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>osgi.core</artifactId>
         </dependency>
 
         <!-- Database drivers -->
@@ -61,38 +71,26 @@
 
     </dependencies>
 
-    <profiles>
-        <profile>
-            <id>context1</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.camel</groupId>
-                        <artifactId>camel-maven-plugin</artifactId>
-                        <configuration>
-                            <applicationContextUri>META-INF/spring/camelContext1.xml</applicationContextUri>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>context2</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.camel</groupId>
-                        <artifactId>camel-maven-plugin</artifactId>
-                        <configuration>
-                            <applicationContextUri>META-INF/spring/camelContext2.xml</applicationContextUri>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-maven-plugin</artifactId>
+                <configuration>
+                    <useBlueprint>true</useBlueprint>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

@@ -16,11 +16,11 @@
      permissions and limitations under the License.
 
 -->
-<beans xmlns="http://www.springframework.org/schema/beans"
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="
-            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-            http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+            http://www.osgi.org/xmlns/blueprint/v1.0.0 https://osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+            http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/spring/camel-blueprint.xsd">
 
     <bean id="jdbcReportIncident" class="com.fusesource.examples.persistence.part1.SqlSpringReportIncident">
         <property name="template" ref="template" />
@@ -30,7 +30,7 @@
         <property name="dataSource" ref="reportdb" />
     </bean>
 
-    <camelContext id="camel" xmlns="http://camel.apache.org/schema/spring">
+    <camelContext id="camel" xmlns="http://camel.apache.org/schema/blueprint">
 
         <template id="template" />
         <endpoint id="sqlEndpoint" uri="sql:xxx" />
@@ -78,26 +78,6 @@
 
     </camelContext>
 
-    <!-- HSQL DB -->
-    <!--
-    <bean id="reportdb" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
-        <property name="url" value="jdbc:hsqldb:hsql://localhost/reportdb"/>
-        <property name="username" value="sa"/>
-        <property name="password" value=""/>
-    </bean>
-    -->
-
-    <!-- H2 DB -->
-    <!--
-    <bean id="reportdb" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="org.h2.Driver" />
-        <property name="url" value="jdbc:h2:tcp://localhost/~/reportdb" />
-        <property name="username" value="sa" />
-        <property name="password" value="" />
-    </bean>
-    -->
-
     <!-- PostgreSQL DB -->
     <bean id="reportdb" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="org.postgresql.Driver" />
@@ -106,4 +86,4 @@
         <property name="password" value="fuse" />
     </bean>
 
-</beans>
+</blueprint>
