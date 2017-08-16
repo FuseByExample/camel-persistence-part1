@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-~ Copyright 2011 FuseSource
-~
-~    Licensed under the Apache License, Version 2.0 (the "License");
-~    you may not use this file except in compliance with the License.
-~    You may obtain a copy of the License at
-~
-~        http://www.apache.org/licenses/LICENSE-2.0
-~
-~    Unless required by applicable law or agreed to in writing, software
-~    distributed under the License is distributed on an "AS IS" BASIS,
-~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-~    See the License for the specific language governing permissions and
-~    limitations under the License.
+
+     Copyright 2005-2017 Red Hat, Inc.
+
+     Red Hat licenses this file to you under the Apache License, version
+     2.0 (the "License"); you may not use this file except in compliance
+     with the License.  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+     implied.  See the License for the specific language governing
+     permissions and limitations under the License.
+
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -26,65 +28,206 @@
     <packaging>pom</packaging>
 
     <properties>
-        <jboss.fuse.bom.version>6.3.0.redhat-187</jboss.fuse.bom.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <fuse.build>284</fuse.build>
+
+        <version.org.apache.camel>2.17.0.redhat-630${fuse.build}</version.org.apache.camel>
+        <version.org.jboss.fuse>6.3.0.redhat-${fuse.build}</version.org.jboss.fuse>
+        <version.org.osgi>5.0.0</version.org.osgi>
+
+        <version.org.postgresql>42.1.4</version.org.postgresql>
+        <version.com.h2database>1.4.196</version.com.h2database>
+        <version.org.hsqldb>2.4.0</version.org.hsqldb>
+
+        <version.com.sun.xml.bind>2.2.11</version.com.sun.xml.bind>
+        <version.log4j>1.2.17</version.log4j>
+        <version.org.slf4j>1.7.7</version.org.slf4j>
 
         <apache.openjpa.version>2.3.0</apache.openjpa.version>
-        <camel.version>2.17.0.redhat-630187</camel.version>
         <commons.lang.version>2.6</commons.lang.version>
         <commons.logging.version>1.2</commons.logging.version>
-        <hsqldb.version>1.8.0.10</hsqldb.version>
-        <h2.version>1.4.184</h2.version>
         <openjpa.maven.plugin.version>1.2</openjpa.maven.plugin.version>
-        <spring.version>3.2.13.RELEASE</spring.version>
+        <version.org.springframework>3.2.18.RELEASE</version.org.springframework>
     </properties>
 
     <modules>
-        <module>jdbc</module>
-        <module>jpa</module>
-        <module>sql-spring</module>
+        <module>jdbc-spring</module>
+        <module>jdbc-blueprint</module>
+        <!--<module>jpa</module>-->
+        <!--<module>sql-spring</module>-->
     </modules>
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- BOM -->
+
             <dependency>
                 <groupId>org.jboss.fuse.bom</groupId>
                 <artifactId>jboss-fuse-parent</artifactId>
-                <version>${jboss.fuse.bom.version}</version>
+                <version>${version.org.jboss.fuse}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <!-- Camel -->
+
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-core</artifactId>
+                <version>${version.org.apache.camel}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-spring</artifactId>
+                <version>${version.org.apache.camel}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-jdbc</artifactId>
+                <version>${version.org.apache.camel}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-blueprint</artifactId>
+                <version>${version.org.apache.camel}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-test-blueprint</artifactId>
+                <version>${version.org.apache.camel}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.felix</groupId>
+                        <artifactId>org.apache.felix.fileinstall</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- OSGi -->
+
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>osgi.enterprise</artifactId>
+                <version>${version.org.osgi}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>osgi.core</artifactId>
+                <version>${version.org.osgi}</version>
+            </dependency>
+
+            <!-- Spring -->
+
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>${version.org.springframework}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-jdbc</artifactId>
+                <version>${version.org.springframework}</version>
+            </dependency>
+
+            <!-- Database drivers -->
+
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${version.org.postgresql}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${version.com.h2database}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hsqldb</groupId>
+                <artifactId>hsqldb</artifactId>
+                <version>${version.org.hsqldb}</version>
+            </dependency>
+
+            <!-- Version alignment -->
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${version.org.slf4j}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+                <version>${version.org.slf4j}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>${version.org.slf4j}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-core</artifactId>
+                <version>${version.com.sun.xml.bind}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-impl</artifactId>
+                <version>${version.com.sun.xml.bind}</version>
+            </dependency>
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>${version.log4j}</version>
             </dependency>
 
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
-        <!-- Camel -->
+
         <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-core</artifactId>
-            <version>${camel.version}</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-spring</artifactId>
-            <version>${camel.version}</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
         </dependency>
 
-        <!-- HSQL DB -->
-        <dependency>
-            <groupId>hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <version>${hsqldb.version}</version>
-        </dependency>
-
-        <!-- H2 Database -->
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>${h2.version}</version>
-        </dependency>
     </dependencies>
 
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.camel</groupId>
+                    <artifactId>camel-maven-plugin</artifactId>
+                    <version>${version.org.apache.camel}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>3.3.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.mycila</groupId>
+                    <artifactId>license-maven-plugin</artifactId>
+                    <version>3.0</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
     <!-- Add FUSE repositories for snaphots and releases -->
     <repositories>
@@ -113,7 +256,60 @@
         </pluginRepository>
     </pluginRepositories>
 
-
-
+    <profiles>
+        <profile>
+            <!-- just run `mvn -Plicense process-sources` -->
+            <id>license</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.mycila</groupId>
+                        <artifactId>license-maven-plugin</artifactId>
+                        <configuration>
+                            <aggregate>true</aggregate>
+                            <useDefaultExcludes>true</useDefaultExcludes>
+                            <header>license-header.txt</header>
+                            <includes>
+                                <include>src/main/java/**/*.java</include>
+                                <include>src/test/java/**/*.java</include>
+                                <include>**/README</include>
+                                <include>pom.xml</include>
+                                <include>**/*.xml</include>
+                                <include>**/*.wsdl</include>
+                                <include>**/*.cfg</include>
+                                <include>**/*.properties</include>
+                                <include>**/bin/fuse*</include>
+                            </includes>
+                            <excludes />
+                            <mapping>
+                                <wsdl>XML_STYLE</wsdl>
+                                <md>XML_STYLE</md>
+                                <fuse>SCRIPT_STYLE</fuse>
+                                <README>SCRIPT_STYLE</README>
+                                <cfg>SCRIPT_STYLE</cfg>
+                            </mapping>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>license-format</id>
+                                <phase>process-sources</phase>
+                                <goals>
+                                    <goal>format</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>license-check</id>
+                                <!-- This is the phase this plugin runs by default. Just an explicit information -->
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
