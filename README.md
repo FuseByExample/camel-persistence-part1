@@ -9,6 +9,12 @@ It covers the different demos made during the talk and is organised like that:
 * `sql-spring`: Maven project using camel-sql component and Spring XML DSL
 * `sql-blueprint`: Maven project using camel-sql component and Blueprint XML DSL
 * `jpa-javase`: Maven project with JUnit tests showing JPA API usage with local and JTA transactions
+* `jpa-ds`: a bundle defining JDBC data sources to be installed in JBoss Fuse container
+* `jpa-model`: a bundle defining JPA Persistence Units to be installed in JBoss Fuse container
+* `jpa-ds-and-model`: data source + persistence units (however see comments below)
+* `jpa-spring`: a bundle with Spring XML based Camel routes using `jpa:` endpoints (both consumer and producer)
+* `jpa-blueprint`: a bundle with Blueprint XML based Camel routes using `jpa:` endpoints (both consumer and producer)
+and JTA-bound `EntityManager` injected directly to Camel bean
 
 # Initial setup
 
