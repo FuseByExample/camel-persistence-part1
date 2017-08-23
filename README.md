@@ -183,32 +183,161 @@ Full example using `transaction-type="JTA"` that shows how to:
   * use plain JDBC to insert row to 2nd database within the same global JTA transaction
   * use plain JDBC code to verify that record was indeed persisted to both databases
 
-## `jpa-spring` and `jpa-blueprint` - TODO
+## `jpa-spring` and `jpa-blueprint`
+
+These examples run inside JBoss Fuse container, because `mvn camel:run`, which underneath uses trimmed-down OSGi registry
+(Felix Connect, formerly known as PojoSR) doesn't work well with aries.jpa.
+
+Before installing any _logic_ bundles, we'll create/use 2 supporting bundles:
+
+* `jpa-ds` which exposes `javax.sql.(XA)DataSource` OSGi services for use by other bundles
+* `jpa-model` which exposes `javax.persistence.EntityManagerFactory` OSGi service to be used by camel routes, components
+and any bundle that requires access to EMF and EntityManager
+
+The separation of _data source_ and _JPA model_ bundles is important in OSGi environment, so we won't get into
+situation when none of the services will be published and will be blocked waiting for each other.
+More precisely - common mistake is to create a Blueprint bundle that both:
+* declare a `<bean>` for `javax.sql.DataSource` and
+* declare a `<bean>` which needs `javax.persistence.EntityManagerFactory` service, even if `META-INF/persistence.xml` is
+in another bundle
+
+The reason is that `EntityManagerFactory` will never get published when `DataSource` is not available, and Blueprint container
+will never publish `javax.sql.DataSource` while waiting for `javax.persistence.EntityManagerFactory`.
+
+It is (almost) fine to have single bundle publishing both DataSource OSGi services (either from Spring XML or Blueprint XML)
+and at the same time containing `Meta-Persistence: META-INF/persistence.xml` Manifest header - this bundle will be
+`extended` by two `extenders`:
+* aries.blueprint.core that'll run BlueprintContainer or org.springframework.osgi.extender that'll run Spring context
+* org.apache.aries.jpa.container that'll instantiate `EntityManagerFactory` from `META-INF/persistence.xml` descriptor
+
+An example of such bundle is shown in `jpa-ds-and-model` project.
+
+The problem may arise when `hibernate.hbm2ddl.auto` property is used in `META-INF/persistence.xml` - because data
+source is immediately needed during construction of `EntityManagerFactory`. That's why it's preferred to separate
+data source and entity manager factory bundles.
+
+Here's a list of steps required to install `jpa-ds` bundle in fresh Fuse installation:
 
     install -s mvn:org.postgresql/postgresql/42.1.4
     install -s mvn:org.apache.commons/commons-pool2/2.4.2
     install -s mvn:org.apache.commons/commons-dbcp2/2.1.1
-    features:install jndi jpa hibernate camel-jpa
-    features:install camel-jpa
-    features:install transaction connector
+    features:install jndi transaction connector
     install -s mvn:com.fusesource.examples.camel-persistence-part1/jpa-ds/1.0
 
-    JBossFuse:karaf@root> ls 317
+After installing and starting `jpa-ds`, we can check the the services exposed by it:
+
+    JBossFuse:karaf@root> ls com.fusesource.examples.camel-persistence-part1.jpa-ds
     
-    FuseSource :: Examples :: Camel Persistence :: JPA Data Source (317) provides:
+    FuseSource :: Examples :: Camel Persistence :: JPA Data Source (320) provides:
     ------------------------------------------------------------------------------
-    Bundle-SymbolicName = com.fusesource.examples.camel-persistence-part1.jpa-ds
-    Bundle-Version = 1.0.0
     objectClass = [javax.sql.DataSource]
-    org.springframework.osgi.bean.name = reportdb
     osgi.jndi.service.name = jdbc/reportdb
-    service.id = 659
+    service.id = 705
+    ...
     ----
-    Bundle-SymbolicName = com.fusesource.examples.camel-persistence-part1.jpa-ds
-    Bundle-Version = 1.0.0
-    objectClass = [org.springframework.osgi.context.DelegatedExecutionOsgiBundleApplicationContext, org.springframework.osgi.context.ConfigurableOsgiBundleApplicationContext, org.springframework.context.ConfigurableApplicationContext, org.springframework.context.ApplicationContext, org.springframework.context.Lifecycle, java.io.Closeable, org.springframework.beans.factory.ListableBeanFactory, org.springframework.beans.factory.HierarchicalBeanFactory, org.springframework.context.MessageSource, org.springframework.context.ApplicationEventPublisher, org.springframework.core.io.support.ResourcePatternResolver, org.springframework.beans.factory.BeanFactory, org.springframework.core.io.ResourceLoader, java.lang.AutoCloseable, org.springframework.beans.factory.DisposableBean]
-    org.springframework.context.service.name = com.fusesource.examples.camel-persistence-part1.jpa-ds
-    service.id = 660
+    aries.managed = true
+    objectClass = [javax.sql.DataSource]
+    osgi.jndi.service.name = jdbc/reportdb
+    service.id = 706
+    service.ranking = 1000
+    ...
+    ----
+    objectClass = [javax.sql.XADataSource]
+    osgi.jndi.service.name = jdbc/reportdbxa
+    service.id = 707
+    ...
+    ----
+    aries.managed = true
+    objectClass = [javax.sql.DataSource]
+    osgi.jndi.service.name = jdbc/reportdbxa
+    service.id = 708
+    service.ranking = 1000
+    ...
+    ----
+    objectClass = [..., org.springframework.context.ApplicationContext, ...]
+    service.id = 709
+    ...
+
+What can be seen in the above output is that we have two pairs of data sources - for both `jdbc/reportdb` and
+`jdbc/reportdbxa` we have original service and a service with `aries.managed=true` property and higher ranking.
+This is why, when looking up a service with given name, we'll get _managed_ version that can perform JTA enlistment
+(if needed).
+
+Here's how `jpa-model` should be installed:
+
+    features:install jpa hibernate
+    install -s mvn:com.fusesource.examples.camel-persistence-part1/jpa-model/1.0
+
+After installing and starting `jpa-model`, we can check the the services exposed by it:
+
+    JBossFuse:karaf@root> ls com.fusesource.examples.camel-persistence-part1.jpa-model
+    
+    FuseSource :: Examples :: Camel Persistence :: JPA Model (321) provides:
+    ------------------------------------------------------------------------
+    objectClass = [javax.persistence.EntityManagerFactory]
+    org.apache.aries.jpa.container.managed = true
+    org.apache.aries.jpa.default.unit.name = false
+    osgi.unit.name = reportincident-jta
+    osgi.unit.provider = org.hibernate.ejb.HibernatePersistence
+    osgi.unit.version = 1.0.0
+    service.id = 677
+    ----
+    objectClass = [javax.persistence.EntityManagerFactory]
+    org.apache.aries.jpa.container.managed = true
+    org.apache.aries.jpa.default.unit.name = false
+    osgi.unit.name = reportincident-local
+    osgi.unit.provider = org.hibernate.ejb.HibernatePersistence
+    osgi.unit.version = 1.0.0
+    service.id = 678
+
+We can see two `javax.persistence.EntityManagerFactory` services for two persistence units from `META-INF/persistence.xml`.
+
+Let's install `jpa-spring` bundle that provides Spring XML based camel routes using JPA endpoints and RESOURCE_LOCAL transactions:
+
+    features:install spring-orm
+    features:install camel-jpa
+    install -s mvn:com.fusesource.examples.camel-persistence-part1/jpa-spring/1.0
+
+We can see contexts running:
+
+    JBossFuse:karaf@root> context-list
+     Context        Status              Total #       Failed #     Inflight #   Uptime        
+     -------        ------              -------       --------     ----------   ------        
+     camel          Started                  76              0              0   12 minutes    
+    JBossFuse:karaf@root> route-list
+     Context        Route                          Status              Total #       Failed #     Inflight #   Uptime        
+     -------        -----                          ------              -------       --------     ----------   ------        
+     camel          create-incident                Started                   0              0              0   12 minutes    
+     camel          rollback-incident              Started                   0              0              0   12 minutes    
+     camel          trigger-database               Started                  50              0              0   12 minutes    
+     camel          trigger-database-named-query   Started                  26              0              0   12 minutes    
+
+`trigger-database` and `trigger-database-named-query` routes poll from database and print the content of `report.t_incident` tables.
+
+In order to test `create-incident` and `rollback-incident` routes, we can:
+
+    $ cd $PROJECT_HOME/jpa-spring/data
+    $ cp csv.txt $FUSE_HOME/data/camel/datainsert
+    $ cp csv-one-record.txt $FUSE_HOME/data/camel/datainsert
+    $ cp csv-notinserted.txt $FUSE_HOME/data/camel/datainsertrollback
+
+Finally `jpa-blueprint` is the ultimate showcase of integrating JPA, Hibernate, JTA and Camel. It can be installed like this:
+
+    features:install spring-orm
+    features:install camel-jpa
+    install -s mvn:com.fusesource.examples.camel-persistence-part1/jpa-blueprint/1.0
+
+`jpa-blueprint` differs from `jpa-spring` in these:
+* it references persistence unit with `transaction-type="JTA"`
+* it doesn't create own `PlatformTransactionManager` and instead references global (JTA) transaction manager
+* it injects `EntityManagerFactory` to `jpa` component using `<jpa:unit>` custom element
+* it injects JTA-scoped `EntityManager` instance to `com.fusesource.examples.persistence.part1.camel.ProcessIncidents`
+Camel bean using `<jpa:context>` custom element
+
+In addition to 4 routes identical to the ones provided by `jpa-spring`, there's additional route `create-incident-using-jpa` which
+invokes Camel bean which has JTA-scoped `EntityManager` instance injected. We can send incident messages to it using:
+
+    $ echo -n 'panic!' > $FUSE_HOME/data/camel/datainsertjpa/incident
 
 ### Aries JPA internals
 
@@ -228,4 +357,5 @@ to get `javax.persistence.spi.PersistenceUnitInfo` instance which is then finall
 
 org.apache.aries.jpa.container.context bundle:
 
-* provides contextual (proxied, thread-local) access to context-related `javax.persistence.EntityManager` instance.
+* provides contextual (proxied, thread-local) access to context-related `javax.persistence.EntityManager` instance
+for Blueprint XMLs which use `<jpa:context>` custom element.

@@ -85,9 +85,8 @@
                  - 0A000: java.sql.SQLFeatureNotSupportedException: Method org.postgresql.jdbc.PgConnection.createClob() is not yet implemented.
                  - 42P01: org.postgresql.util.PSQLException: ERROR: sequence "hibernate_sequence" does not exist
                 to prevent errors during schema export: "org.hibernate.tool.hbm2ddl.SchemaExport: This connection has been closed."
-                last comma is required!
             -->
-            <entry key="aries.xa.exceptionSorter" value="custom(00000,01000,01003,01004,01005,01006,01007,02000,07000,07001,07002,07003,07004,07005,07006,07008,07009,08007,22000,22001,22002,22003,22005,22012,22019,22024,22025,22027,23000,24000,25000,2B000,2D000,26000,28000,33000,34000,35000,37000,3C000,40000,40003,42000,0A000,42P01,)" />
+            <entry key="aries.xa.exceptionSorter" value="custom(00000,01000,01003,01004,01005,01006,01007,02000,07000,07001,07002,07003,07004,07005,07006,07008,07009,08007,22000,22001,22002,22003,22005,22012,22019,22024,22025,22027,23000,24000,25000,2B000,2D000,26000,28000,33000,34000,35000,37000,3C000,40000,40003,42000,0A000,42P01)" />
         </osgi:service-properties>
     </osgi:service>
 
@@ -122,9 +121,8 @@
                  - 0A000: java.sql.SQLFeatureNotSupportedException: Method org.postgresql.jdbc.PgConnection.createClob() is not yet implemented.
                  - 42P01: org.postgresql.util.PSQLException: ERROR: sequence "hibernate_sequence" does not exist
                 to prevent errors during schema export: "org.hibernate.tool.hbm2ddl.SchemaExport: This connection has been closed."
-                last comma is required!
             -->
-            <entry key="aries.xa.exceptionSorter" value="custom(00000,01000,01003,01004,01005,01006,01007,02000,07000,07001,07002,07003,07004,07005,07006,07008,07009,08007,22000,22001,22002,22003,22005,22012,22019,22024,22025,22027,23000,24000,25000,2B000,2D000,26000,28000,33000,34000,35000,37000,3C000,40000,40003,42000,0A000,42P01,)" />
+            <entry key="aries.xa.exceptionSorter" value="custom(00000,01000,01003,01004,01005,01006,01007,02000,07000,07001,07002,07003,07004,07005,07006,07008,07009,08007,22000,22001,22002,22003,22005,22012,22019,22024,22025,22027,23000,24000,25000,2B000,2D000,26000,28000,33000,34000,35000,37000,3C000,40000,40003,42000,0A000,42P01)" />
         </osgi:service-properties>
     </osgi:service>
 

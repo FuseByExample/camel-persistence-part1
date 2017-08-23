@@ -29,28 +29,14 @@
     </parent>
 
     <groupId>com.fusesource.examples.camel-persistence-part1</groupId>
-    <artifactId>jpa-spring</artifactId>
+    <artifactId>jpa-ds-and-model</artifactId>
     <packaging>bundle</packaging>
-    <name>FuseSource :: Examples :: Camel Persistence :: JPA Spring</name>
+    <name>FuseSource :: Examples :: Camel Persistence :: JPA Data Source AND Model</name>
 
     <dependencies>
 
-        <dependency>
-            <groupId>com.fusesource.examples.camel-persistence-part1</groupId>
-            <artifactId>jpa-model</artifactId>
-            <version>1.0</version>
-        </dependency>
-
         <!-- Camel -->
 
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-spring</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-jpa</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-bindy</artifactId>
@@ -67,32 +53,6 @@
             <artifactId>osgi.core</artifactId>
         </dependency>
 
-        <!-- Spring -->
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-orm</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.osgi</groupId>
-            <artifactId>spring-osgi-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.osgi</groupId>
-            <artifactId>spring-osgi-extender</artifactId>
-        </dependency>
-
-        <!-- Commons -->
-
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-dbcp2</artifactId>
-        </dependency>
-
         <!-- JPA -->
 
         <!-- geronimo-jpa_2.0_spec is used by Fuse, but the source code isn't commented -->
@@ -107,52 +67,38 @@
             <artifactId>hibernate-jpa-2.0-api</artifactId>
             <version>1.0.1.Final-redhat-3</version>
         </dependency>
+
+        <!-- Spring -->
+
         <dependency>
-            <groupId>org.apache.aries.jpa</groupId>
-            <artifactId>org.apache.aries.jpa.api</artifactId>
-            <version>${version.org.apache.aries.jpa.api}</version>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.aries.jpa</groupId>
-            <artifactId>org.apache.aries.jpa.container</artifactId>
-            <version>${version.org.apache.aries.jpa}</version>
+            <groupId>org.springframework.osgi</groupId>
+            <artifactId>spring-osgi-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.aries.jpa</groupId>
-            <artifactId>org.apache.aries.jpa.container.context</artifactId>
-            <version>${version.org.apache.aries.jpa}</version>
+            <groupId>org.springframework.osgi</groupId>
+            <artifactId>spring-osgi-extender</artifactId>
+        </dependency>
+
+        <!-- Commons -->
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-dbcp2</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.aries.jpa</groupId>
-            <artifactId>org.apache.aries.jpa.blueprint.aries</artifactId>
-            <version>${version.org.apache.aries.jpa}</version>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
         </dependency>
+
+        <!-- Database drivers -->
+
         <dependency>
-            <groupId>org.apache.aries</groupId>
-            <artifactId>org.apache.aries.util</artifactId>
-            <version>${version.org.apache.aries.util}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>${version.org.hibernate}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.hibernate.javax.persistence</groupId>
-                    <artifactId>hibernate-jpa-2.0-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>${version.org.hibernate}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.hibernate.javax.persistence</groupId>
-                    <artifactId>hibernate-jpa-2.0-api</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
         </dependency>
 
     </dependencies>
@@ -166,8 +112,13 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+                        <Meta-Persistence>META-INF/persistence.xml</Meta-Persistence>
+                        <_removeheaders>Provide-Capability,Require-Capability,Include-Resource</_removeheaders>
                         <Import-Package>
-                            *
+                            *,
+                            org.hibernate.proxy,
+                            javassist.util.proxy,
+                            org.postgresql
                         </Import-Package>
                     </instructions>
                 </configuration>

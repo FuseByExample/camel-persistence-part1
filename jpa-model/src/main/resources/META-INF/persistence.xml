@@ -37,6 +37,7 @@
 
     <persistence-unit name="reportincident-jta" transaction-type="JTA">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <jta-data-source>osgi:service/jdbc/reportdbxa</jta-data-source>
         <non-jta-data-source>osgi:service/jdbc/reportdb</non-jta-data-source>
         <class>com.fusesource.examples.persistence.part1.model.Incident</class>
 

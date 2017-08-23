@@ -406,10 +406,14 @@ public class JavaSETest {
         mcf.setExceptionSorter(new KnownSQLStateExceptionSorter() {
             @Override
             protected boolean checkSQLState(String sqlState) {
-//                if ("0A000".equals(sqlState)) {
-//                    // java.sql.SQLFeatureNotSupportedException: Method org.postgresql.jdbc.PgConnection.createClob() is not yet implemented.
-//                    return false;
-//                }
+                if ("0A000".equals(sqlState)) {
+                    // java.sql.SQLFeatureNotSupportedException: Method org.postgresql.jdbc.PgConnection.createClob() is not yet implemented.
+                    return false;
+                }
+                if ("42P01".equals(sqlState)) {
+                    // org.postgresql.util.PSQLException: ERROR: sequence "hibernate_sequence" does not exist
+                    return false;
+                }
                 return super.checkSQLState(sqlState);
             }
         });

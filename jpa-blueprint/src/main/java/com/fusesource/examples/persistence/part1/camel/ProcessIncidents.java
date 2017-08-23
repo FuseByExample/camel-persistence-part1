@@ -23,10 +23,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
+import javax.persistence.EntityManager;
 
 public class ProcessIncidents {
 
     public static int count = 0;
+
+    private EntityManager entityManager;
 
     @SuppressWarnings("unchecked")
     public Incident extract(Exchange exchange) throws ParseException {
@@ -44,10 +47,31 @@ public class ProcessIncidents {
 
     }
 
+    @SuppressWarnings("unchecked")
+    public void createIncident(Exchange exchange) throws ParseException {
+
+        String summary = exchange.getIn().getBody(String.class);
+
+        DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        String currentDate = format.format(new Date());
+        Date creationDate = format.parse(currentDate);
+
+        Incident incident = new Incident();
+        incident.setCreationDate(creationDate);
+        incident.setCreationUser("file");
+        incident.setSummary(summary);
+        entityManager.persist(incident);
+        System.out.println("#### Created incident: " + incident);
+    }
+
     public void generateError() throws Exception {
         System.out.println("+++++ We will generate an exception +++++, " + count + " redelivery !");
         count++;
         throw new Exception("Cannot connect to Database ....");
+    }
+
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
 
 }

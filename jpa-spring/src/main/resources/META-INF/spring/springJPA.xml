@@ -23,7 +23,7 @@
             http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
             http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.2.xsd">
 
-    <bean id="jpaTx" class="org.springframework.orm.jpa.JpaTransactionManager">
+    <bean id="jpaTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactory" />
         <property name="dataSource" ref="reportdb" />
         <property name="jpaDialect">
@@ -32,18 +32,23 @@
     </bean>
 
     <osgi:reference id="reportdb" interface="javax.sql.DataSource" />
-    <osgi:reference id="entityManagerFactory" interface="javax.persistence.EntityManagerFactory" />
 
-    <!--<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">-->
-        <!--<property name="persistenceUnitName" value="reportincident" />-->
-        <!--<property name="dataSource" ref="reportdb" />-->
-        <!--<property name="jpaVendorAdapter">-->
-            <!--<bean id="jpaAdapter" class="org.springframework.orm.jpa.vendor.OpenJpaVendorAdapter">-->
-                <!--<property name="databasePlatform" value="org.apache.openjpa.jdbc.sql.H2Dictionary" />-->
-                <!--<property name="showSql" value="true" />-->
-                <!--<property name="database" value="H2" />-->
-            <!--</bean>-->
-        <!--</property>-->
-    <!--</bean>-->
+    <!-- reference to EMF using transaction-type="RESOURCE_LOCAL" -->
+    <osgi:reference id="entityManagerFactory" interface="javax.persistence.EntityManagerFactory" filter="(osgi.unit.name=reportincident-local)" />
+
+    <!-- Outside of OSGi, EMF may be created using org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean -->
+    <!--
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="persistenceUnitName" value="reportincident" />
+        <property name="dataSource" ref="reportdb" />
+        <property name="jpaVendorAdapter">
+            <bean id="jpaAdapter" class="org.springframework.orm.jpa.vendor.OpenJpaVendorAdapter">
+                <property name="databasePlatform" value="org.apache.openjpa.jdbc.sql.H2Dictionary" />
+                <property name="showSql" value="true" />
+                <property name="database" value="H2" />
+            </bean>
+        </property>
+    </bean>
+    -->
 
 </beans>

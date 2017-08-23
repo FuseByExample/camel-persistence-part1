@@ -69,7 +69,9 @@
         <module>jpa-javase</module>
         <module>jpa-ds</module>
         <module>jpa-model</module>
+        <module>jpa-ds-and-model</module>
         <module>jpa-spring</module>
+        <module>jpa-blueprint</module>
     </modules>
 
     <dependencyManagement>

@@ -29,9 +29,9 @@
     </parent>
 
     <groupId>com.fusesource.examples.camel-persistence-part1</groupId>
-    <artifactId>jpa-spring</artifactId>
+    <artifactId>jpa-blueprint</artifactId>
     <packaging>bundle</packaging>
-    <name>FuseSource :: Examples :: Camel Persistence :: JPA Spring</name>
+    <name>FuseSource :: Examples :: Camel Persistence :: JPA Blueprint</name>
 
     <dependencies>
 
@@ -45,7 +45,7 @@
 
         <dependency>
             <groupId>org.apache.camel</groupId>
-            <artifactId>camel-spring</artifactId>
+            <artifactId>camel-blueprint</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
@@ -65,21 +65,6 @@
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>osgi.core</artifactId>
-        </dependency>
-
-        <!-- Spring -->
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-orm</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.osgi</groupId>
-            <artifactId>spring-osgi-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.osgi</groupId>
-            <artifactId>spring-osgi-extender</artifactId>
         </dependency>
 
         <!-- Commons -->

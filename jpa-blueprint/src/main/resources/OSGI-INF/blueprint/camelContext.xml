@@ -16,22 +16,31 @@
      permissions and limitations under the License.
 
 -->
-<beans xmlns="http://www.springframework.org/schema/beans"
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+        xmlns:jpa="http://aries.apache.org/xmlns/jpa/v1.1.0"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="
-            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-            http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+            http://www.osgi.org/xmlns/blueprint/v1.0.0 https://osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+            http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/spring/camel-blueprint.xsd
+            http://aries.apache.org/xmlns/jpa/v1.1.0 http://aries.apache.org/schemas/jpa/jpa_110.xsd">
 
-    <bean id="jpa" class="org.apache.camel.component.jpa.JpaComponent">
+    <!-- activation="lazy" is required for components in blueprint XML -->
+    <bean id="jpa" class="org.apache.camel.component.jpa.JpaComponent" activation="lazy">
         <!-- otherwise, org.apache.aries.transaction.internal.AriesPlatformTransactionManager would be picked -->
-        <property name="transactionManager" ref="jpaTransactionManager" />
-        <!-- should be false, because we're using RESOURCE_LOCAL entity manager -->
-        <property name="joinTransaction" value="false" />
-        <!-- shoule be true, to ensure single EntityManager is used by JpaTransactionManager and JpaConsumer -->
-        <property name="sharedEntityManager" value="true" />
-        <property name="entityManagerFactory" ref="entityManagerFactory" />
+        <property name="transactionManager" ref="jtaTransactionManager" />
+        <!-- should be true, because we're using JTA entity manager -->
+        <property name="joinTransaction" value="true" />
+        <!-- we'll inject JTA, context-aware EMF, so "shared" flag should be set to false -->
+        <property name="sharedEntityManager" value="false" />
+        <!-- instead of setting entityManagerFactory directly by reference, we'll use jpa:unit -->
+        <jpa:unit property="entityManagerFactory" unitname="reportincident-jta" />
+        <!--<property name="entityManagerFactory" ref="entityManagerFactory" />-->
     </bean>
-    <bean id="processIncident" class="com.fusesource.examples.persistence.part1.camel.ProcessIncidents" />
+
+    <bean id="processIncident" class="com.fusesource.examples.persistence.part1.camel.ProcessIncidents">
+        <!-- injecting transaction scoped EntityManager instance - a proxy wrapping JTA-bound EntityManager -->
+        <jpa:context property="entityManager" unitname="reportincident-jta" type="TRANSACTION" />
+    </bean>
 
     <bean id="txErrorHandler" class="org.apache.camel.spring.spi.TransactionErrorHandlerBuilder">
         <property name="redeliveryPolicy" ref="redeliveryPolicy" />
@@ -41,12 +50,12 @@
         <property name="maximumRedeliveries" value="2" />
     </bean>
 
-    <bean id="JPA_TRANSACTION" class="org.apache.camel.spring.spi.SpringTransactionPolicy">
-        <property name="transactionManager" ref="jpaTransactionManager" />
+    <bean id="JTA_TRANSACTION" class="org.apache.camel.spring.spi.SpringTransactionPolicy">
+        <property name="transactionManager" ref="jtaTransactionManager" />
         <property name="propagationBehaviorName" value="PROPAGATION_REQUIRED" />
     </bean>
 
-    <camelContext id="camel" xmlns="http://camel.apache.org/schema/spring">
+    <camelContext id="camel" xmlns="http://camel.apache.org/schema/blueprint">
 
         <dataFormats>
             <bindy type="Csv" classType="com.fusesource.examples.persistence.part1.model.Incident" id="csvReport" />
@@ -57,7 +66,7 @@
         -->
         <route id="trigger-database">
             <from uri="jpa://com.fusesource.examples.persistence.part1.model.Incident?consumeDelete=false&amp;consumer.delay=10000" />
-            <transacted ref="JPA_TRANSACTION" />
+            <transacted ref="JTA_TRANSACTION" />
             <log message=">>> Result : ${body}" />
         </route>
 
@@ -66,7 +75,7 @@
         -->
         <route id="trigger-database-named-query">
             <from uri="jpa://com.fusesource.examples.persistence.part1.model.Incident?consumeDelete=false&amp;consumer.delay=20000&amp;consumer.initialDelay=5000&amp;consumer.namedQuery=reportSummaryQuery" />
-            <transacted ref="JPA_TRANSACTION" />
+            <transacted ref="JTA_TRANSACTION" />
             <!-- JPA does not return an Incident but an Object[] -->
             <split>
                 <simple>${body}</simple>
@@ -82,7 +91,7 @@
         <route id="create-incident">
             <from uri="file://data/camel/datainsert?moveFailed=failed" />
             <unmarshal ref="csvReport" />
-            <transacted ref="JPA_TRANSACTION" />
+            <transacted ref="JTA_TRANSACTION" />
             <split>
                 <simple>${body}</simple>
                 <bean ref="processIncident" method="extract" />
@@ -92,13 +101,23 @@
         </route>
 
         <!--
+            Route which will insert a record in the DB using injected EntityManager
+        -->
+        <route id="create-incident-using-jpa">
+            <from uri="file://data/camel/datainsertjpa?moveFailed=failed" />
+            <transacted ref="JTA_TRANSACTION" />
+            <bean ref="processIncident" method="createIncident" />
+            <log message=">>> Record inserted : ${body}" />
+        </route>
+
+        <!--
             This route generates an error to rollback the record from the DB. The file
             is not deleted but moved in the failed directory and Camel redelivers 2 times the
             exchange by calling the last processor where the error occurs
         -->
         <route id="rollback-incident" errorHandlerRef="txErrorHandler">
             <from uri="file://data/camel/datainsertrollback?moveFailed=failed" />
-            <transacted ref="JPA_TRANSACTION" />
+            <transacted ref="JTA_TRANSACTION" />
             <unmarshal ref="csvReport" />
             <split>
                 <simple>${body}</simple>
@@ -111,4 +130,4 @@
 
     </camelContext>
 
-</beans>
+</blueprint>

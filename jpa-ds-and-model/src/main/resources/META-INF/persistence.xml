@@ -22,7 +22,7 @@
         xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
         version="2.0">
 
-    <persistence-unit name="reportincident" transaction-type="RESOURCE_LOCAL">
+    <persistence-unit name="reportincident-local" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <non-jta-data-source>osgi:service/jdbc/reportdb</non-jta-data-source>
         <class>com.fusesource.examples.persistence.part1.model.Incident</class>
@@ -33,31 +33,20 @@
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL82Dialect" />
             <property name="hibernate.hbm2ddl.auto" value="create-drop" />
         </properties>
-
-        <!-- hsql
-        <properties>
-            <property name="openjpa.jdbc.SynchronizeMappings"
-                      value="buildSchema(SchemaAction='add,deleteTableContents')"/>
-            <property name="openjpa.Log"
-                      value="commons" />
-            <property name="openjpa.jdbc.DBDictionary"
-                      value="hsql(useSchemaName=true)"/>
-            <property name="openjpa.jdbc.Schema"
-                      value="REPORT" />
-        </properties>
-        -->
-
-        <!--<properties>-->
-            <!--<property name="openjpa.jdbc.SynchronizeMappings"-->
-                    <!--value="buildSchema(SchemaAction='add,deleteTableContents')" />-->
-            <!--<property name="openjpa.Log"-->
-                    <!--value="commons" />-->
-            <!--<property name="openjpa.jdbc.DBDictionary"-->
-                    <!--value="h2(useSchemaName=true)" />-->
-            <!--<property name="openjpa.jdbc.Schema"-->
-                    <!--value="REPORT" />-->
-        <!--</properties>-->
-
     </persistence-unit>
+
+    <persistence-unit name="reportincident-jta" transaction-type="JTA">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <jta-data-source>osgi:service/jdbc/reportdbxa</jta-data-source>
+        <non-jta-data-source>osgi:service/jdbc/reportdb</non-jta-data-source>
+        <class>com.fusesource.examples.persistence.part1.model.Incident</class>
+
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL82Dialect" />
+            <property name="hibernate.hbm2ddl.auto" value="create-drop" />
+        </properties>
+    </persistence-unit>
+
 </persistence>
-        
