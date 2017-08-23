@@ -30,7 +30,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <fuse.build>294</fuse.build>
+        <fuse.build>187</fuse.build>
 
         <version.org.apache.camel>2.17.0.redhat-630${fuse.build}</version.org.apache.camel>
         <version.org.jboss.fuse>6.3.0.redhat-${fuse.build}</version.org.jboss.fuse>
