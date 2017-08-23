@@ -29,34 +29,11 @@
     </parent>
 
     <groupId>com.fusesource.examples.camel-persistence-part1</groupId>
-    <artifactId>jdbc-blueprint</artifactId>
+    <artifactId>jpa-ds</artifactId>
     <packaging>bundle</packaging>
-    <name>FuseSource :: Examples :: Camel Persistence :: JDBC Blueprint</name>
+    <name>FuseSource :: Examples :: Camel Persistence :: JPA Data Source</name>
 
     <dependencies>
-
-        <!-- Camel -->
-
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-blueprint</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-test-blueprint</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-jdbc</artifactId>
-        </dependency>
-
-        <!-- Spring -->
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-        </dependency>
 
         <!-- OSGi -->
 
@@ -69,16 +46,33 @@
             <artifactId>osgi.core</artifactId>
         </dependency>
 
+        <!-- Spring -->
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.osgi</groupId>
+            <artifactId>spring-osgi-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.osgi</groupId>
+            <artifactId>spring-osgi-extender</artifactId>
+        </dependency>
+
+        <!-- Commons -->
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-dbcp2</artifactId>
+        </dependency>
+
         <!-- Database drivers -->
 
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.aries.blueprint</groupId>
-            <artifactId>org.apache.aries.blueprint.core</artifactId>
         </dependency>
 
     </dependencies>
@@ -92,14 +86,11 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+                        <Import-Package>
+                            *,
+                            org.postgresql
+                        </Import-Package>
                     </instructions>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.camel</groupId>
-                <artifactId>camel-maven-plugin</artifactId>
-                <configuration>
-                    <useBlueprint>true</useBlueprint>
                 </configuration>
             </plugin>
         </plugins>

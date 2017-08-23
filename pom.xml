@@ -30,25 +30,35 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <fuse.build>284</fuse.build>
+        <fuse.build>294</fuse.build>
 
         <version.org.apache.camel>2.17.0.redhat-630${fuse.build}</version.org.apache.camel>
         <version.org.jboss.fuse>6.3.0.redhat-${fuse.build}</version.org.jboss.fuse>
         <version.org.osgi>5.0.0</version.org.osgi>
+        <!-- versions from camel-test-blueprint -->
+        <version.org.apache.aries.jpa.api>1.0.2</version.org.apache.aries.jpa.api>
+        <version.org.apache.aries.jpa>1.0.4</version.org.apache.aries.jpa>
+        <version.org.apache.aries.util>1.1.3</version.org.apache.aries.util>
+        <version.org.apache.aries.blueprint.core>1.4.4</version.org.apache.aries.blueprint.core>
+        <version.org.apache.aries.blueprint.cm>1.0.6</version.org.apache.aries.blueprint.cm>
 
         <version.org.postgresql>42.1.4</version.org.postgresql>
         <version.com.h2database>1.4.196</version.com.h2database>
         <version.org.hsqldb>2.4.0</version.org.hsqldb>
 
+        <version.commons-lang>2.6</version.commons-lang>
         <version.com.sun.xml.bind>2.2.11</version.com.sun.xml.bind>
+        <version.junit>4.12</version.junit>
         <version.log4j>1.2.17</version.log4j>
+        <version.org.apache.commons.dbcp2>2.1.1</version.org.apache.commons.dbcp2>
+        <version.org.apache.geronimo.specs.jpa>1.1</version.org.apache.geronimo.specs.jpa>
+        <version.org.hibernate>4.2.22.Final-redhat-1</version.org.hibernate>
         <version.org.slf4j>1.7.7</version.org.slf4j>
 
         <apache.openjpa.version>2.3.0</apache.openjpa.version>
-        <commons.lang.version>2.6</commons.lang.version>
-        <commons.logging.version>1.2</commons.logging.version>
         <openjpa.maven.plugin.version>1.2</openjpa.maven.plugin.version>
         <version.org.springframework>3.2.18.RELEASE</version.org.springframework>
+        <version.org.springframework.osgi>1.2.1</version.org.springframework.osgi>
     </properties>
 
     <modules>
@@ -56,7 +66,10 @@
         <module>jdbc-blueprint</module>
         <module>sql-spring</module>
         <module>sql-blueprint</module>
-        <!--<module>jpa</module>-->
+        <module>jpa-javase</module>
+        <module>jpa-ds</module>
+        <module>jpa-model</module>
+        <module>jpa-spring</module>
     </modules>
 
     <dependencyManagement>
@@ -91,6 +104,11 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.camel</groupId>
+                <artifactId>camel-jpa</artifactId>
+                <version>${version.org.apache.camel}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
                 <artifactId>camel-blueprint</artifactId>
                 <version>${version.org.apache.camel}</version>
             </dependency>
@@ -118,6 +136,16 @@
                 <artifactId>osgi.core</artifactId>
                 <version>${version.org.osgi}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.aries.blueprint</groupId>
+                <artifactId>org.apache.aries.blueprint.core</artifactId>
+                <version>${version.org.apache.aries.blueprint.core}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.aries.blueprint</groupId>
+                <artifactId>org.apache.aries.blueprint.cm</artifactId>
+                <version>${version.org.apache.aries.blueprint.cm}</version>
+            </dependency>
 
             <!-- Spring -->
 
@@ -136,6 +164,34 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-jdbc</artifactId>
                 <version>${version.org.springframework}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-jpa</artifactId>
+                <version>${version.org.springframework}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.osgi</groupId>
+                <artifactId>spring-osgi-core</artifactId>
+                <version>${version.org.springframework.osgi}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.osgi</groupId>
+                <artifactId>spring-osgi-extender</artifactId>
+                <version>${version.org.springframework.osgi}</version>
+            </dependency>
+
+            <!-- Commons -->
+
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>${version.commons-lang}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-dbcp2</artifactId>
+                <version>${version.org.apache.commons.dbcp2}</version>
             </dependency>
 
             <!-- Database drivers -->
@@ -189,6 +245,15 @@
                 <version>${version.log4j}</version>
             </dependency>
 
+            <!-- Test -->
+
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${version.junit}</version>
+                <scope>test</scope>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -229,6 +294,17 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.6.2</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
     <!-- Add FUSE repositories for snaphots and releases -->

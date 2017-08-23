@@ -8,6 +8,7 @@ It covers the different demos made during the talk and is organised like that:
 * `jdbc-blueprint`: Maven project using camel-jdbc component and Blueprint XML DSL
 * `sql-spring`: Maven project using camel-sql component and Spring XML DSL
 * `sql-blueprint`: Maven project using camel-sql component and Blueprint XML DSL
+* `jpa-javase`: Maven project with JUnit tests showing JPA API usage with local and JTA transactions
 
 # Initial setup
 
@@ -27,22 +28,40 @@ You can use any of available methods to access PostgreSQL server (e.g., by mappi
 
         $ docker run -d --name fuse-postgresql-server -e POSTGRES_USER=fuse -e POSTGRES_PASSWORD=fuse -p 5432:5432 postgres:9.6.4
 
-2. Create `reportdb` database by from the `fuse-postgresql-server` container:
+2. Create `reportdb` database from the `fuse-postgresql-server` container:
 
         $ docker exec -ti fuse-postgresql-server /bin/bash
-        root@3e37b4b579c7:/# psql -U fuse -d fuse
-        psql (9.4.0)
+        root@58b0d9de9c5b:/# psql -U fuse -d fuse
+        psql (9.6.4)
         Type "help" for help.
         fuse=# create database reportdb owner fuse encoding 'utf8';
         CREATE DATABASE
-        fuse=# \q
+        fuse=# \c reportdb
+        You are now connected to database "reportdb" as user "fuse".
+        reportdb=# create schema report;
+        CREATE SCHEMA
+        reportdb=# \q
 
-3. Initialize database `reportdb` by creating schema, table and populating the table with data.
+3. Create `reportdb2` database from the `fuse-postgresql-server` container (for XA purposes):
+
+        $ docker exec -ti fuse-postgresql-server /bin/bash
+        root@58b0d9de9c5b:/# psql -U fuse -d fuse
+        psql (9.6.4)
+        Type "help" for help.
+        fuse=# create database reportdb2 owner fuse encoding 'utf8';
+        CREATE DATABASE
+        fuse=# \c reportdb2
+        You are now connected to database "reportdb2" as user "fuse".
+        reportdb2=# create schema report;
+        CREATE SCHEMA
+        reportdb2=# \q
+
+4. Initialize database `reportdb` by creating schema, table and populating the table with data.
 
         $ cd $PROJECT_HOME/database
         $ docker cp src/config/postgresql/reportdb-postgresql-script.sql fuse-postgresql-server:/tmp
         $ docker exec -ti fuse-postgresql-server /bin/bash
-        $ root@58b0d9de9c5b:/# psql -U fuse -d reportdb -f /tmp/reportdb-postgresql-script.sql 
+        root@58b0d9de9c5b:/# psql -U fuse -d reportdb -f /tmp/reportdb-postgresql-script.sql 
         ...
         DROP SCHEMA
         CREATE SCHEMA
@@ -51,6 +70,13 @@ You can use any of available methods to access PostgreSQL server (e.g., by mappi
         INSERT 0 1
         INSERT 0 1
         INSERT 0 1
+
+5. Configure PostgreSQL database to allow XA transactions by setting `max_prepared_transactions` to the value equal
+or greater than `max_connections` setting (`100` in the case of `postgres:9.6.4` image).
+
+        root@58b0d9de9c5b:/# sed -i 's/^#max_prepared_transactions = 0/max_prepared_transactions = 200/' /var/lib/postgresql/data/postgresql.conf
+
+5. Restart `fuse-postgresql-server` container. Your PostgreSQL database is ready to use.
 
 # Running examples
 
@@ -118,3 +144,88 @@ to be invoked.
 
         $ cd $PROJECT_HOME/sql-blueprint
         $ mvn clean package camel:run
+
+## `jpa-javase`
+
+This project should be examined before running `jpa-spring` and `jpa-blueprint` (and supporting `jpa-ds` and `jpa-model`).
+`jpa-javase` shows few _canonical_ ways of using JPA API with Hibernate JPA provider.
+According to JPA 2.0 specification (JSR 317), JPA can successfully be used outside application server - in pure JavaSE
+environment. Using JPA this way is described as _application-managed Entity Manager_.
+
+In this mode, it's the role of application developer to create `EntityManagerFactory` and obtain `EntityManager`. (In
+application server, i.e., when using _container-managed Entity Manager_, `EntityManager` instance is injected to application
+code using `@javax.persistence.PersistenceContext` annotation).
+
+`jpa-javase` provides 3 unit tests that illustrate few uses cases related to JPA:
+
+* `com.fusesource.examples.persistence.part1.DiscoveryTest.discovery()`: a tiny example of using JPA discover API,
+where we can check what is the configured (discovered) `javax.persistence.spi.PersistenceProvider` instance.
+* `com.fusesource.examples.persistence.part1.JavaSETest.bootstrapAndUseApplicationManagedResourceLocalEntityManager()`:
+Full example using `transaction-type="RESOURCE_LOCAL"` that shows how to:
+  * create dbcp2 `javax.sql.DataSource`
+  * use `javax.persistence.Persistence.createEntityManagerFactory()` to _create_ application-managed EMF using provided properties
+  * use `javax.persistence.EntityManagerFactory.createEntityManager()` to _obtain_ EntityManager
+  * use `javax.persistence.EntityTransaction` API to manually demarcate JPA transactions according to declared `transaction-type="RESOURCE_LOCAL"`
+  * use `javax.persistence.EntityManager.persist()` to simply use JPA API
+  * use plain JDBC code to verify that record was indeed persisted to database
+* `com.fusesource.examples.persistence.part1.JavaSETest.bootstrapAndUseApplicationManagedJTAEntityManager()`:
+Full example using `transaction-type="JTA"` that shows how to:
+  * create fully functional `javax.transaction.TransactionManager`/`javax.transaction.UserTransaction` instances using
+    aries.transaction.manager
+  * create 2 `org.postgresql.xa.PGXADataSource` instances for XA-aware access to PostgreSQL database
+  * create 2 `javax.sql.DataSource` instances that are using JCA API to interact with aries.jdbc and provide
+    XA-aware, JTA-enlisting, pooling data sources
+  * use `javax.persistence.Persistence.createEntityManagerFactory()` to _create_ application-managed EMF using provided properties
+  * use `javax.persistence.EntityManagerFactory.createEntityManager()` to _obtain_ EntityManager
+  * use `javax.transaction.UserTransaction` API to manually demarcate JPA transactions according to declared `transaction-type="JTA"`
+  * use `javax.persistence.EntityManager.joinTransaction()` to tie JPA to JTA
+  * use `javax.persistence.EntityManager.persist()` to simply use JPA API
+  * use plain JDBC to insert row to 2nd database within the same global JTA transaction
+  * use plain JDBC code to verify that record was indeed persisted to both databases
+
+## `jpa-spring` and `jpa-blueprint` - TODO
+
+    install -s mvn:org.postgresql/postgresql/42.1.4
+    install -s mvn:org.apache.commons/commons-pool2/2.4.2
+    install -s mvn:org.apache.commons/commons-dbcp2/2.1.1
+    features:install jndi jpa hibernate camel-jpa
+    features:install camel-jpa
+    features:install transaction connector
+    install -s mvn:com.fusesource.examples.camel-persistence-part1/jpa-ds/1.0
+
+    JBossFuse:karaf@root> ls 317
+    
+    FuseSource :: Examples :: Camel Persistence :: JPA Data Source (317) provides:
+    ------------------------------------------------------------------------------
+    Bundle-SymbolicName = com.fusesource.examples.camel-persistence-part1.jpa-ds
+    Bundle-Version = 1.0.0
+    objectClass = [javax.sql.DataSource]
+    org.springframework.osgi.bean.name = reportdb
+    osgi.jndi.service.name = jdbc/reportdb
+    service.id = 659
+    ----
+    Bundle-SymbolicName = com.fusesource.examples.camel-persistence-part1.jpa-ds
+    Bundle-Version = 1.0.0
+    objectClass = [org.springframework.osgi.context.DelegatedExecutionOsgiBundleApplicationContext, org.springframework.osgi.context.ConfigurableOsgiBundleApplicationContext, org.springframework.context.ConfigurableApplicationContext, org.springframework.context.ApplicationContext, org.springframework.context.Lifecycle, java.io.Closeable, org.springframework.beans.factory.ListableBeanFactory, org.springframework.beans.factory.HierarchicalBeanFactory, org.springframework.context.MessageSource, org.springframework.context.ApplicationEventPublisher, org.springframework.core.io.support.ResourcePatternResolver, org.springframework.beans.factory.BeanFactory, org.springframework.core.io.ResourceLoader, java.lang.AutoCloseable, org.springframework.beans.factory.DisposableBean]
+    org.springframework.context.service.name = com.fusesource.examples.camel-persistence-part1.jpa-ds
+    service.id = 660
+
+### Aries JPA internals
+
+org.apache.aries.jpa.container bundle:
+
+* `org.apache.aries.jpa.container.parsing.PersistenceDescriptorParser` service implemented by
+`org.apache.aries.jpa.container.parsing.impl.PersistenceDescriptorParserImpl` - parses `META-INF/persistence.xml`
+descriptors into `org.apache.aries.jpa.container.parsing.impl.PersistenceUnitImpl` objects using
+`org.apache.aries.jpa.container.parsing.impl.JPAHandler`
+* `org.apache.aries.jpa.container.impl.PersistenceBundleManager` - locates, parses and manages persistence units
+defined in OSGi bundles. Contains `Map<Bundle, EntityManagerFactoryManager>`
+
+Parsed `org.apache.aries.jpa.container.parsing.impl.PersistenceUnitImpl` is changed into
+`org.apache.aries.jpa.container.unit.impl.ManagedPersistenceUnitInfoImpl` and `getPersistenceUnitInfo()` is called
+to get `javax.persistence.spi.PersistenceUnitInfo` instance which is then finally used as argument to
+`javax.persistence.spi.PersistenceProvider.createContainerEntityManagerFactory()`.
+
+org.apache.aries.jpa.container.context bundle:
+
+* provides contextual (proxied, thread-local) access to context-related `javax.persistence.EntityManager` instance.

@@ -29,9 +29,9 @@
     </parent>
 
     <groupId>com.fusesource.examples.camel-persistence-part1</groupId>
-    <artifactId>jdbc-blueprint</artifactId>
+    <artifactId>jpa-model</artifactId>
     <packaging>bundle</packaging>
-    <name>FuseSource :: Examples :: Camel Persistence :: JDBC Blueprint</name>
+    <name>FuseSource :: Examples :: Camel Persistence :: JPA Model</name>
 
     <dependencies>
 
@@ -39,46 +39,29 @@
 
         <dependency>
             <groupId>org.apache.camel</groupId>
-            <artifactId>camel-blueprint</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-test-blueprint</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-jdbc</artifactId>
+            <artifactId>camel-bindy</artifactId>
         </dependency>
 
-        <!-- Spring -->
+        <!-- JPA -->
 
+        <!-- geronimo-jpa_2.0_spec is used by Fuse, but the source code isn't commented -->
+        <!--<dependency>-->
+            <!--<groupId>org.apache.geronimo.specs</groupId>-->
+            <!--<artifactId>geronimo-jpa_2.0_spec</artifactId>-->
+            <!--<version>${version.org.apache.geronimo.specs.jpa}</version>-->
+        <!--</dependency>-->
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
+            <!-- This contains proper source code -->
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.0-api</artifactId>
+            <version>1.0.1.Final-redhat-3</version>
         </dependency>
 
-        <!-- OSGi -->
+        <!-- Commons -->
 
         <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>osgi.enterprise</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>osgi.core</artifactId>
-        </dependency>
-
-        <!-- Database drivers -->
-
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.aries.blueprint</groupId>
-            <artifactId>org.apache.aries.blueprint.core</artifactId>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
         </dependency>
 
     </dependencies>
@@ -92,14 +75,15 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+                        <Meta-Persistence>META-INF/persistence.xml</Meta-Persistence>
+                        <_removeheaders>Provide-Capability,Require-Capability,Include-Resource</_removeheaders>
+                        <Import-Package>
+                            *,
+                            org.hibernate.proxy,
+                            javassist.util.proxy,
+                            org.postgresql
+                        </Import-Package>
                     </instructions>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.camel</groupId>
-                <artifactId>camel-maven-plugin</artifactId>
-                <configuration>
-                    <useBlueprint>true</useBlueprint>
                 </configuration>
             </plugin>
         </plugins>
